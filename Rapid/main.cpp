@@ -27,21 +27,36 @@ int main()
 
   GLfloat vertices[] =
   { //     COORDINATES 
-    -0.5f, 0.0f,  0.5f,
-    -0.5f, 0.0f, -0.5f,
-     0.5f, 0.0f, -0.5f,
-     0.5f, 0.0f,  0.5f,
-     0.0f, 0.8f,  0.0f
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+    0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+    0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+
+    0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.8f, 0.5f,  0.0f, // Right side
+
+    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f,  0.8f  // Facing side  
   };
 
   GLuint indices[] =
   {
-    0, 1, 2,
-    0, 2, 3,
-    0, 1, 4,
-    1, 2, 4,
-    2, 3, 4,
-    3, 0, 4
+    0, 1, 2, // Bottom side
+    0, 2, 3, // Bottom side
+    4, 6, 5, // Left side
+    7, 9, 8, // Non-facing side
+    10, 12, 11, // Right side
+    13, 15, 14 // Facing side
   };
 
   GLFWwindow* window = glfwCreateWindow(width, height, "Title", NULL, NULL);
@@ -72,7 +87,9 @@ int main()
   VBO vbo(vertices, sizeof(vertices));
   EBO ebo(indices, sizeof(indices));
 
-  vao.LinkVBO(vbo, 0);
+  vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
+  vao.LinkAttrib(vbo, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+
   vao.Unbind();
   vbo.Unbind();
   ebo.Unbind();
@@ -88,6 +105,22 @@ int main()
 
   Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
+  glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+  glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+
+
+  // Use shader program and set variables
+  program.use();
+
+  // Set light properties
+  glm::vec3 pyramidPos = glm::vec3(0.0f, 0.0f, 0.0f);
+  glm::mat4 pyramidModel = glm::mat4(1.0f);
+  pyramidModel = glm::translate(pyramidModel, pyramidPos);
+  glUniformMatrix4fv(glGetUniformLocation(program.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
+  glUniform4f(glGetUniformLocation(program.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+  glUniform3f(glGetUniformLocation(program.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+
   while (!glfwWindowShouldClose(window)) {
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -99,6 +132,9 @@ int main()
     camera.Inputs(window);
    
     vao.Bind();
+
+    // Set camera position for the shader
+    glUniform3f(glGetUniformLocation(program.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 
     glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
