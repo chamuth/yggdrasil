@@ -39,6 +39,12 @@
     <ClCompile Include="vao.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ebo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag">
@@ -62,6 +68,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vao.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ebo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

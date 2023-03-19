@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="ebo.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
@@ -150,6 +152,8 @@
     <None Include="default.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
+    <ClInclude Include="ebo.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shaderProgram.h" />

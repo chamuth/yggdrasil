@@ -1,16 +1,22 @@
-// Rapid.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "shaderProgram.h"
 #include "vao.h"
 #include "vbo.h"
+#include "ebo.h"
+#include "camera.h"
+
 
 int main()
 {
+  int width = 800;
+  int height = 800;
+
   glfwInit();
 
   // Set OpenGL version hint
@@ -19,13 +25,26 @@ int main()
   // Set OpenGL core profile
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLfloat vertices[] = {
-    -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-    0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-    0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f
+  GLfloat vertices[] =
+  { //     COORDINATES 
+    -0.5f, 0.0f,  0.5f,
+    -0.5f, 0.0f, -0.5f,
+     0.5f, 0.0f, -0.5f,
+     0.5f, 0.0f,  0.5f,
+     0.0f, 0.8f,  0.0f
   };
 
-  GLFWwindow* window = glfwCreateWindow(800, 800, "Title", NULL, NULL);
+  GLuint indices[] =
+  {
+    0, 1, 2,
+    0, 2, 3,
+    0, 1, 4,
+    1, 2, 4,
+    2, 3, 4,
+    3, 0, 4
+  };
+
+  GLFWwindow* window = glfwCreateWindow(width, height, "Title", NULL, NULL);
 
   if (window == NULL) {
     std::cout << "Failed to initialize the window" << std::endl;
@@ -36,9 +55,8 @@ int main()
   glfwMakeContextCurrent(window);
 
   gladLoadGL();
-
   
-  glViewport(0, 0, 800, 800);
+  glViewport(0, 0, width, height);
 
   // Initialize shader program;
   ShaderProgram program;
@@ -52,23 +70,37 @@ int main()
   vao.Bind();
 
   VBO vbo(vertices, sizeof(vertices));
+  EBO ebo(indices, sizeof(indices));
+
   vao.LinkVBO(vbo, 0);
   vao.Unbind();
   vbo.Unbind();
+  ebo.Unbind();
   
   glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glfwSwapBuffers(window);
 
+  double prevTime = glfwGetTime();
+  
+  glEnable(GL_DEPTH_TEST);
+
+  Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
   while (!glfwWindowShouldClose(window)) {
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     program.use();
+
+    // Camera functionality
+    camera.Matrix(45.0f, 0.1f, 100.0f, program, "camMatrix");
+    camera.Inputs(window);
+   
     vao.Bind();
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
     glfwSwapBuffers(window);
 
@@ -77,6 +109,7 @@ int main()
 
   vao.Delete();
   vbo.Delete();
+  ebo.Delete();
   
   glfwDestroyWindow(window);
   glfwTerminate();

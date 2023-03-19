@@ -1,3 +1,6 @@
+#ifndef SHADER_PROGRAM_CLASS_H
+#define SHADER_PROGRAM_CLASS_H
+
 #include <glad/glad.h>
 #include "shader.h"
 #include <vector>
@@ -40,3 +43,5 @@ public:
 private:
   vector<Shader> shaders;
 };
+
+#endif
