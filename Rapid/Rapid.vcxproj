@@ -137,11 +137,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="boxGenerator.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="ebo.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="perlinNoise.cpp" />
+    <ClCompile Include="rendereable.cpp" />
+    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shaderProgram.cpp" />
     <ClCompile Include="vao.cpp" />
@@ -152,9 +156,14 @@
     <None Include="default.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="boxGenerator.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="ebo.h" />
     <ClInclude Include="file.h" />
+    <ClInclude Include="lightComposition.h" />
+    <ClInclude Include="perlinNoise.h" />
+    <ClInclude Include="renderable.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shaderProgram.h" />
     <ClInclude Include="vao.h" />

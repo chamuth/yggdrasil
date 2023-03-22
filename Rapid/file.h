@@ -1,3 +1,6 @@
+#ifndef FILE_CLASS_H
+#define FILE_CLASS_H
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -14,3 +17,5 @@ public:
   static std::string readFile(const char* path);
 
 };
+
+#endif

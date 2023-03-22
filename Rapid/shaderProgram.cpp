@@ -45,3 +45,7 @@ void ShaderProgram::use() {
 void ShaderProgram::setFloat(const std::string name, float f) {
   glUniform1f(glGetUniformLocation(ID, name.c_str()), f);
 }
+
+GLint ShaderProgram::getUniformID(const char* name) {
+  return glGetUniformLocation(ID, name);
+}

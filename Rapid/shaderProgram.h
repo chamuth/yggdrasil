@@ -40,6 +40,12 @@ public:
   /// <param name="f">uniform value</param>
   void setFloat(const std::string name, float f);
 
+  /// <summary>
+  /// Get uniform location in this shader program
+  /// </summary>
+  /// <param name="name">name of the uniform</param>
+  /// <returns>ID of uniform</returns>
+  GLint getUniformID(const char* name);
 private:
   vector<Shader> shaders;
 };
